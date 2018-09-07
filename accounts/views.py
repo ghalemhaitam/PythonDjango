@@ -4,29 +4,67 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+
 # Create your views here.
 
-class LoginView(generic.ListView):
+def LoginView(request):
 
-    """
     if User is not None:
-       # do something if the user is authenticated
-         redirect('/crud/')
+        # do something if the user is authenticated
+        return redirect('/account/')
     else:
-       # do something if the user is authenticated
-        template_name = 'account/login.html'
+        # do something if the user is authenticated
+        return render(request,'account/login.html')
    
-    """
 
-    template_name = 'account/login.html'
-    def get_queryset(self): 
-        return
+
+
+
+def DashbordUser(request):
+    return render(request,'account/dashbord_user.html')
+
+
+
+
+def LogoutUser(request):
+    
+    
+    if logout(request):
+        return render(request, 'account/login.html')
+    else:
+        return render(request, 'account/dashbord_user.html')
+
+      
+    
+
+
 
 
 class InscriptionView(generic.ListView):
     template_name = 'account/inscription.html'
     def get_queryset(self):
         return
+
+
+
+
+def Authentification(request):
+    if request.method == 'POST':
+        user = authenticate(username=request.POST["username"], password=request.POST["password"])
+        if user is not None:
+            login(request, user)
+            if request.user.is_authenticated:
+                return HttpResponse("yes")
+            else:
+                return HttpResponse("yes,no")
+        
+        else:
+            # No backend authenticated the credentials
+            return HttpResponse("no")
+    else:
+        return HttpResponse("no")
+        #return redirect('/account/')
 
 
 def Inscription(request):
